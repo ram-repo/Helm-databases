@@ -1,0 +1,18 @@
+image:
+  repository: gvenzl/oracle-free
+  tag: latest
+
+securityContext:
+  runAsUser: 1000
+  fsGroup: 1000
+
+env:
+  ORACLE_PASSWORD: "YourOraclePass"
+
+persistence:
+  storageClass: "standard"
+  size: 8Gi
+
+service:
+  type: ClusterIP
+  port: 1521
