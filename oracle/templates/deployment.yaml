@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle
+  template:
+    metadata:
+      labels:
+        app: oracle
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      containers:
+        - name: oracle
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 1521
+          env:
+            - name: ORACLE_PASSWORD
+              value: {{ .Values.env.ORACLE_PASSWORD }}
+          securityContext:
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+          volumeMounts:
+            - name: oracle-data
+              mountPath: /opt/oracle/oradata
+      volumes:
+        - name: oracle-data
+          persistentVolumeClaim:
+            claimName: oracle-pvc
